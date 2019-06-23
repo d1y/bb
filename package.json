@@ -1,0 +1,27 @@
+{
+  "name": "bb",
+  "version": "1.0.0",
+  "description": "`bilibili` 粉丝查看,使用 `nodejs` 编写",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/d1y/bb.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/d1y/bb/issues"
+  },
+  "homepage": "https://github.com/d1y/bb#readme",
+  "dependencies": {
+    "ansi-align": "^3.0.0",
+    "boxen": "^4.1.0",
+    "clear": "^0.1.0",
+    "figlet": "^1.2.3",
+    "request": "^2.88.0"
+  }
+}
