@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="referrer" content="never">
+  <title>bilibili</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@zeit-ui/style@latest/dist/style.css" />
+  <link rel="icon" href="https://bilibili.com/favicon.ico">
+  <style>
+    .clearfix::after,
+    .clearfix::before {
+      content: "";
+      display: block;
+      clear: both;
+      height: 0;
+    }
+    .fl {
+      float: left;
+    }
+    .fr {
+      float: right;
+    }
+    .fl p {
+      margin: .8rem 0;
+    }
+    .btn {
+      font-size: 5vh;
+    }
+    #loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 9999;
+      background: rgba(0,0,0,.8);
+      overflow: hidden;
+    }
+    .flex {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      height:100%;
+      color: #fff;
+      background: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="zi-main zi-layout ex-layout" id="app">
+    <div id="loading" v-if="load">
+      <div class="flex">
+          <p style="font-size: 12vh">渲染中</p>
+      </div>
+    </div>
+    <div><img :src="top"/></div>
+    <h1># 账号信息</h1>
+    <div class="clearfix" style="margin-bottom: 2rem;">
+        <img class="fl zi-avatar huge" :src="face">
+        <div class="fl" style="margin-left: 2rem">
+          <p><code>用户名</code>: {{ username }}</p>
+          <p><code>id</code>: {{ id }}</p>
+        </div>
+    </div>
+    <pre>{{ desc }}</pre>
+    <h3># 当前粉丝数</h3>
+    <p style="padding-top: 4rem"><code style="font-size:8vw">{{ fans }}</code></p>
+    <button @click="uploadData" class="zi-btn success shadow btn" style="margin-top: 5vh">刷新粉丝数</button>
+  </div>
+</body>
+<script src="https://cdn.bootcss.com/vue/2.6.10/vue.js"></script>
+<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/fetch/3.0.0/fetch.min.js"></script> -->
+<script>
+  // querystring
+  function getQueryString(name) { 
+    let reg = `(^|&)${name}=([^&]*)(&|$)`
+    let r = window.location.search.substr(1).match(reg); 
+    if (r != null) return unescape(r[2]); return null; 
+  }
+  const id = getQueryString('id')
+  console.log(id)
+  const App = new Vue({
+    el: '#app',
+    data: {
+      username: `陈某人`,
+      id: 2333,
+      desc: 'fuck you',
+      fans: 2223333,
+      load: true,
+      face: `http://i1.hdslb.com/bfs/face/654ed89c763ca1f003cc2d0145e1ec444cc7f0e8.jpg`,
+      top: ``
+    },
+    mounted() {
+      console.log('fuck you')
+      this.uploadData()
+    },
+    methods: {
+      uploadData() {
+        this.load = true
+        const v1 = fetch(`/api/info?id=${id}`).then(r=> r.json())
+        const v2 = fetch(`/api/stat?id=${id}`).then(r=> r.json())
+        Promise.all([v1,v2])
+          .then(r=> {
+            const info = r[0].data
+            const stat = r[1].data
+            this.username = info.name
+            this.id = info.mid
+            this.desc = info.sign
+            this.top = info.top_photo
+            this.load = false
+            this.face = info.face
+            this.fans = stat.follower
+          })
+      }
+    }
+  })
+</script>
+</html>
