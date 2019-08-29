@@ -1,41 +1,24 @@
-const request = require('request');
-const fx = require('./url');
-const id = require('./config.json').id;
+#!/usr/bin/env node
 const clear = require('clear');
 const boxen = require('boxen');
-const figlet = require('figlet');
-
+const { getInfo, getStat, toChar } = require('./lib/utils')
+const ASX = require('./lib/mode')
 require('colors');
 
-let rp = e => e.replace('FUCK', id)
-
-clear()
-
-function getPick() {
-  let mp = {
-    padding: 2,
-    margin: 5
-  }
-  clear()
-  ;(async () => {
-    request(rp(fx.stat), (err, req, body) => {
-      data = JSON.parse(body).data.follower
-      if (!err) {
-        figlet.text(` -> ${data} <- `, {
-          font: 'big'
-        }, (err, msg) => {
-          console.log(boxen(msg.green, mp))
-        })
-      } else {
-        throw err;
-      }
-    })
-  })();
+async function main() {
+  // const data = await toChar('Bilibili')
+  const data = ASX.cat
+  const cut = `-`
+  console.log(data)
+  console.log(cut.padStart(19,cut))
+  const info = await getInfo
+  const stat = await getStat
+  console.log(`name: ${info.data.name.green} \n sign: ${info.data.sign.red} \n level: ${info.data.level.toString().yellow}`)
 }
+main()
 
-getPick()
-setInterval(getPick,20000)
 
+// readonly mode `q` exit
 const readline = require('readline');
 const rl = readline.createInterface({
   input: process.stdin,
